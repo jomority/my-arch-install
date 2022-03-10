@@ -69,7 +69,7 @@ grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
 It should look like this:
 
 ```
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=qwer resume=UUID=ed2a0b41-0845-4298-9753-5598a2b191e7"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=ed2a0b41-0845-4298-9753-5598a2b191e7"
 ```
 
 
@@ -88,7 +88,7 @@ grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
 It should look like this:
 
 ```
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=qwer resume=UUID=ed2a0b41-0845-4298-9753-5598a2b191e7 resume_offset=249925632"
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=ed2a0b41-0845-4298-9753-5598a2b191e7 resume_offset=249925632"
 ```
 
 
