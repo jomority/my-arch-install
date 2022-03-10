@@ -3,6 +3,15 @@
 Prerequisites: You have done the steps in [Install & configure basic things (user, mirrors, pacman, ...)](./basic.md), at least created a user account and installed an AUR helper.
 
 
+## NVIDIA driver
+
+If you have a NVIDIA GPU install the proprietary driver:
+
+```bash
+paru -S nvidia
+```
+
+
 ## Fonts
 
 Install some font packages:
@@ -19,7 +28,8 @@ paru -S noto-fonts \
 
 ```bash
 paru -S --asdeps xdg-desktop-portal-gnome \
-	power-profiles-daemon
+	power-profiles-daemon \
+	wireplumber
 paru -S gdm \
 	gnome-control-center \
 	gnome-tweaks \
@@ -80,6 +90,9 @@ paru -S nautilus \
 paru -S --asdeps gvfs-mtp gvfs-smb
 ```
 
+When you get asked to choose between `jack2` and `pipewire-jack` I recommend `pipewire-jack`.
+Especially if you want to use [PipeWire for audio](#optional-handle-audio-with-pipewire) anyway.
+
 
 ## Audio management software
 
@@ -94,9 +107,13 @@ sudo alsactl store
 If you want to use PipeWire to handle audio instead of PulseAudio:
 
 ```bash
-paru -S --asdeps wireplumber rtkit
+paru -S --asdeps rtkit pipewire-alsa
+paru -Rns pulseaudio-alsa
 paru -S pipewire-jack pipewire-pulse
 ```
+
+This asks to remove `pulseaudio` and `pulseaudio-bluetooth`.
+Confirm it.
 
 You can also install one ore more of the following patch bays:
 
@@ -116,6 +133,8 @@ Especially useful for mobile devices to save power. See the [ArchWiki](https://w
 paru -S gstreamer-vaapi
 ```
 
+Depending on the GPU in your system execute the commands in one of the following sections.
+
 
 ### Intel (i)GPU
 
@@ -134,8 +153,6 @@ echo "VDPAU_DRIVER=radeonsi" | sudo tee -a /etc/environment >/dev/null
 
 ### Nvidia GPU
 
-Not tested, but provided by `nvidia-utils` which should be installed when you install the `nvidia` driver and:
-
 ```bash
 paru -S --asdeps libva-vdpau-driver
 echo "VDPAU_DRIVER=nvidia" | sudo tee -a /etc/environment >/dev/null
@@ -151,6 +168,8 @@ reboot
 
 You should be greeted by a graphical login after the reboot.
 Login and continue inside the graphical terminal.
+
+Set you keyboard layout in the Gnome settings if you want.
 
 
 ## Printing
@@ -188,7 +207,6 @@ sudo groupadd -r sambashare
 sudo chown root:sambashare /var/lib/samba/usershares
 sudo chmod 1770 /var/lib/samba/usershares
 sudo usermod -aG sambashare $USER
-sudo smbpasswd -a $USER
 NET="192.168.0.0/255.255.255.0"
 sudo tee /etc/samba/smb.conf >/dev/null <<EOF
 [global]
@@ -220,6 +238,7 @@ sudo tee /etc/samba/smb.conf >/dev/null <<EOF
 	writable = no
 	printable = yes
 EOF
+sudo smbpasswd -a $USER
 sudo systemctl enable --now smb.service nmb.service
 sudo firewall-cmd --add-service=samba --zone=home --permanent
 sudo firewall-cmd --add-service=samba --zone=home

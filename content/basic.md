@@ -200,6 +200,7 @@ If you wan't to use wine and/or steam you need to enable the multilib repository
 
 ```bash
 sudo sed -i '/#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf
+sudo pacman -Syu
 ```
 
 
@@ -212,6 +213,8 @@ We install them as dependencies because we later install the [base-devel-meta](h
 sudo pacman -S --asdeps base-devel
 ```
 
+Press enter to choose `all`.
+
 Build and install Paru:
 
 ```bash
@@ -219,7 +222,7 @@ git clone https://aur.archlinux.org/paru.git
 cd paru/
 makepkg -sri
 cd ..
-rm -r paru/
+rm -rf paru/
 paru -S --asdeps bat
 ```
 
@@ -234,7 +237,7 @@ paru -S base-devel-meta
 *Note:* These are packages that I consider useful. I am well aware that this is subjective.
 
 ```bash
-sudo pacman -S \
+paru -S \
 	neovim \
 	tmux \
 	progress \
@@ -261,7 +264,7 @@ sudo pacman -S \
 ```
 
 What is the difference to the [essential packages](#install-essential-packages)?
-I'm not completely sure, but there two distinctions:
+I'm not completely sure, but there are two distinctions:
 
 - There are some AUR packages in the *useful packages*
 - I wouldn't miss most of the *useful packages* on a server

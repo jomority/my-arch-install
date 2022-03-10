@@ -53,7 +53,7 @@ Replace `<HOSTNAME>` with your desired hostname.
 
 ```bash
 hostname=<HOSTNAME>
-echo "$hostname" > /etc/hostname
+echo $hostname > /etc/hostname
 cat >> /etc/hosts <<EOF
 127.0.0.1       localhost
 127.0.1.1       $hostname.localdomain $hostname
@@ -61,6 +61,13 @@ cat >> /etc/hosts <<EOF
 ff02::1         ip6-allnodes
 ff02::2         ip6-allrouters
 EOF
+```
+
+
+## Ensure pacman keys are up to date
+
+```bash
+pacman -Syu archlinux-keyring
 ```
 
 

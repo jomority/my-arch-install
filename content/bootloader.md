@@ -168,7 +168,6 @@ sed -i -E \
 	-e '/^fallback_image=/a fallback_efi_image="/efi/EFI/Linux/archlinux-linux-fallback.efi"' \
 	-e 's;^#?(fallback_options=".*)"$;\1 --splash /usr/share/systemd/bootctl/splash-arch.bmp";' \
 	/etc/mkinitcpio.d/linux.preset
-mkdir -p /efi/EFI/Linux/
 mkinitcpio -p linux
 bootctl set-default archlinux-linux.efi
 ```
@@ -184,7 +183,7 @@ You can remove the archiso (USB/CD/...).
 ```bash
 exit
 swapoff -a
-umount -R /mnt
+umount -R /mnt/root/ /mnt/tmp/
 reboot
 ```
 

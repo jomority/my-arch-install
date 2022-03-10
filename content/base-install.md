@@ -27,6 +27,7 @@ You can also use ext4 (or any other filesystem) instead of btrfs for the root pa
 However it is then not possible to use snapshots in the [later chapters](./snapper.md).
 
 *Hint:* This can also be done graphically from an already installed distro or [gparted live iso](https://gparted.org/download.php).
+In GParted, use *fat32* for the *EFI system parition* partition and set the *boot* and *esp* flags.
 
 
 ## Setup network
@@ -62,10 +63,9 @@ btrfs subvolume create /mnt/tmp/@
 btrfs subvolume create /mnt/tmp/@home
 btrfs subvolume create /mnt/tmp/@var
 mount -o compress=zstd,subvol=@ /dev/nvme0n1p2 /mnt/root/  # or /dev/sda2
-mkdir -p /mnt/root/home/ /mnt/root/var/
+mkdir -p /mnt/root/efi/ /mnt/root/home/ /mnt/root/var/
 mount -o compress=zstd,subvol=@home /dev/nvme0n1p2 /mnt/root/home/  # or /dev/sda2
 mount -o compress=zstd,subvol=@var /dev/nvme0n1p2 /mnt/root/var/  # or /dev/sda2
-mkdir -p /mnt/root/efi/
 mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
 ```
 
@@ -78,7 +78,7 @@ mkdir -p /mnt/root/efi/
 mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
 ```
 
-If you have a swap partition do:
+If you have a swap partition do (replace partition number accordingly):
 
 ```bash
 swapon /dev/nvme0n1p3  # or /dev/sda3
@@ -100,7 +100,7 @@ To use a fast mirror near to you for package download during the installation, e
 
 ```bash
 vim /etc/pacman.d/mirrorlist
-# Use `dd` and `p` to cut and paste a line
+# Use `dd` and `p` to cut and paste a line, `:wq` to save and quit
 ```
 
 Finally install Arch Linux:
@@ -114,7 +114,7 @@ Then repeat the mirrorlist edit for your installed system:
 
 ```bash
 vim /mnt/root/etc/pacman.d/mirrorlist
-# Use `dd` and `p` to cut and paste a line
+# Use `dd` and `p` to cut and paste a line, `:wq` to save and quit
 ```
 
 ---
