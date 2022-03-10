@@ -11,6 +11,25 @@ If you have a NVIDIA GPU install the proprietary driver:
 paru -S nvidia
 ```
 
+To be able to run a Wayland session, you need to enable DRM KMS (see the [ArchWiki](https://wiki.archlinux.org/title/GDM#Wayland_and_the_proprietary_NVIDIA_driver)) by extending the kernel command line.
+Depending on your bootloader execute the commands in one of the following sections.
+
+
+### Maybe: If bootloader GRUB
+
+```bash
+sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/"$/ nvidia-drm.modeset=1"/' /etc/default/grub
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+
+### Maybe: If bootloader systemd-boot
+
+```bash
+echo -n " nvidia-drm.modeset=1" | sudo tee -a /etc/kernel/cmdline >/dev/null
+sudo mkinitcpio -P
+```
+
 
 ## Fonts
 
