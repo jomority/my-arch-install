@@ -3,7 +3,7 @@
 Boot into the live environment using UEFI.
 
 
-## Setup disk
+## Create partitions
 
 Use [gdisk](https://wiki.archlinux.org/title/GPT_fdisk#Create_a_partition_table_and_partitions) to partition the disk.
 Create at least:
@@ -14,17 +14,6 @@ Create at least:
 - Optionally a *Linux swap* partition
   - If hibernation is desired, its size should be at least the RAM size, e.g. 8192 MiB for 8GB RAM
   - Alternatively you can use either no swap at all or a swapfile (this is not advised with btrfs)
-
-Format the partitions (replace partition numbers accordingly):
-
-```bash
-mkfs.fat /dev/nvme0n1p1  # or /dev/sda1
-mkfs.btrfs /dev/nvme0n1p2  # or /dev/sda2
-mkswap /dev/nvme0n1p3  # or /dev/sda3
-```
-
-You can also use ext4 (or any other filesystem) instead of btrfs for the root partition if you feel less adventurous.
-However it is then not possible to use snapshots in the [later chapters](./snapper.md).
 
 *Hint:* This can also be done graphically from an already installed distro or [gparted live iso](https://gparted.org/download.php).
 In GParted, use *fat32* for the *EFI system parition* partition and set the *boot* and *esp* flags.
@@ -53,10 +42,46 @@ timedatectl set-timezone Europe/Berlin
 
 ## Mount and prepare filesystem
 
+Format the EFI partition (replace partition number accordingly):
+
+```bash
+mkfs.fat /dev/nvme0n1p1  # or /dev/sda1
+```
+
+I will leave you the choice between ext4 and Btrfs as root filesystem.
+Ext4 is the traditional linux file system still used by some distributions.
+It does its job without many bells and whistles.
+Btrfs is a newer filesystem with more features like compression, reflinks, subvolumes and snapshotting.
+It is becoming more popular in the distribution landscape and can be considered mature for our purposes.
+
+It will not be possible to do the chapter [Optional: Setup Snapper](./snapper.md) if you choose ext4.
+
+
+### Option 1: Ext4 as root filesystem
+
+Format the root partition (replace partition number accordingly):
+
+```bash
+mkfs.ext4 /dev/nvme0n1p2  # or /dev/sda2
+```
+
+Mount the partitions:
+
+```bash
+mkdir -p /mnt/root/
+mount /dev/nvme0n1p2 /mnt/root/  # or /dev/sda2
+mkdir -p /mnt/root/efi/
+mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
+```
+
+
+### Option 2 (Advanced): Btrfs as root filesystem
+
 We create the btrfs subvolumes `@`, `@home` and `@var` for `/`, `/home/` and `/var/` respectively.
 While this is not strictly necessary this makes it possible to snapshot them separately (see the [ArchWiki](https://wiki.archlinux.org/title/Snapper#Suggested_filesystem_layout) and the [later chapter about snapper](./snapper.md))
 
 ```bash
+mkfs.btrfs /dev/nvme0n1p2  # or /dev/sda2
 mkdir -p /mnt/root/ /mnt/tmp/
 mount /dev/nvme0n1p2 /mnt/tmp/  # or /dev/sda2
 btrfs subvolume create /mnt/tmp/@
@@ -69,18 +94,13 @@ mount -o compress=zstd,subvol=@var /dev/nvme0n1p2 /mnt/root/var/  # or /dev/sda2
 mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
 ```
 
-If you don't use btrfs just do:
 
-```bash
-mkdir -p /mnt/root/
-mount /dev/nvme0n1p2 /mnt/root/  # or /dev/sda2
-mkdir -p /mnt/root/efi/
-mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
-```
+## Maybe: Prepare swap
 
 If you have a swap partition do (replace partition number accordingly):
 
 ```bash
+mkswap /dev/nvme0n1p3  # or /dev/sda3
 swapon /dev/nvme0n1p3  # or /dev/sda3
 ```
 

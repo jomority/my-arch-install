@@ -18,7 +18,7 @@ sudo btrfs subvolume create /mnt/tmp/@snapshots
 
 ## Optional: Put everything that shouldn't be snapshotted on separate subvolumes
 
-We already did that in [Install base system](./base-install.md#mount-and-prepare-filesystem) for `/var/`.
+We already did that in [Install base system](./base-install.md#option-2-advanced-btrfs-as-root-filesystem) for `/var/`.
 It may be useful to do it for other folders, for example `/srv/` or `/home/user/.cache/`.
 
 Best to not move the folders on a running system.
