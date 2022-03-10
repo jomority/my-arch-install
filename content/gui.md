@@ -3,7 +3,7 @@
 Prerequisites: You have done the steps in [Install & configure basic things (user, mirrors, pacman, ...)](./basic.md), at least created a user account and installed an AUR helper.
 
 
-## NVIDIA driver
+## Maybe: NVIDIA driver
 
 If you have a NVIDIA GPU install the proprietary driver:
 
@@ -56,7 +56,7 @@ paru -S --asdeps gnome-remote-desktop \
 ```
 
 
-#### If firewall installed
+#### Maybe: If firewall installed
 
 You probably want these servers at least to be reachable in your *home* networks.
 
@@ -91,7 +91,7 @@ paru -S --asdeps gvfs-mtp gvfs-smb
 ```
 
 When you get asked to choose between `jack2` and `pipewire-jack` I recommend `pipewire-jack`.
-Especially if you want to use [PipeWire for audio](#optional-handle-audio-with-pipewire) anyway.
+Especially if you want to use [PipeWire for audio](#optional-advanced-handle-audio-with-pipewire) anyway.
 
 
 ## Audio management software
@@ -102,7 +102,7 @@ sudo alsactl store
 ```
 
 
-### Optional: Handle audio with PipeWire
+### Optional (Advanced): Handle audio with PipeWire
 
 If you want to use PipeWire to handle audio instead of PulseAudio:
 
@@ -136,14 +136,14 @@ paru -S gstreamer-vaapi
 Depending on the GPU in your system execute the commands in one of the following sections.
 
 
-### Intel (i)GPU
+### Maybe: Intel (i)GPU
 
 ```bash
 paru -S --asdeps intel-media-driver
 ```
 
 
-### AMD (i)GPU
+### Maybe: AMD (i)GPU
 
 ```bash
 paru -S --asdeps libva-mesa-driver mesa-vdpau
@@ -151,7 +151,7 @@ echo "VDPAU_DRIVER=radeonsi" | sudo tee -a /etc/environment >/dev/null
 ```
 
 
-### Nvidia GPU
+### Maybe: Nvidia GPU
 
 ```bash
 paru -S --asdeps libva-vdpau-driver

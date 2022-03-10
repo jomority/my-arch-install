@@ -20,7 +20,9 @@ The opposite would also be possible, but this is easier.
 At the next boot the problem should be fixed.
 
 
-## Windows file access from Linux
+## Optional: Windows file access from Linux
+
+Do this if you want to be able to access the `C:\` partition from linux.
 
 Windows cannot easily read Linux file systems.
 But the other way around is possible.

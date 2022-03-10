@@ -92,7 +92,7 @@ sudo systemctl enable --now sshd.service
 ```
 
 
-## Configure firewall zones
+## Maybe: Configure firewall zones
 
 If you installed the [firewall](./base-setup.md#optional-firewall) it needs to know which network(s) is/are your home network and can be trusted.
 Some open services are preconfigured.
@@ -142,7 +142,7 @@ sudo systemctl enable --now logrotate.timer
 ```
 
 
-## Trim for SSDs
+## Maybe: Trim for SSDs
 
 If you have at least one SSD, you should enable the periodic trim service:
 
@@ -279,7 +279,7 @@ paru -S linux-lts
 ```
 
 
-### If bootloader GRUB
+### Maybe: If bootloader GRUB
 
 To boot the non-LTS kernel by default we need an additional package:
 
@@ -289,7 +289,7 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 
-### If bootloader systemd-boot
+### Maybe: If bootloader systemd-boot
 
 We need to tell mkinitcpio to also create UKIs for the LTS kernel:
 

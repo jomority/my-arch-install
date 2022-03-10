@@ -31,6 +31,16 @@ After all, this is how I set my private systems up.
 If you want to dual boot with Windows, have a look [here](./content/windows.md).
 
 
+## Legend
+
+Some section headlines are prefixed by one or multiple of the following words:
+
+- Optional: You can choose to not do this if you don't want it.
+- Maybe: This has to be done under some circumstances. They are described in the headline or in the first paragraph.
+- Option *n*: This is one of multiple different options that achieve the same. Choose one of them.
+- Advanced: Only in addition to Optional or Option. It means that this is experimental or the more advanced option.
+
+
 ## Options / Decisions
 
 This list contains some choices I made for components, configurations or requirements.

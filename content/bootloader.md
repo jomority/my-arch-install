@@ -99,7 +99,7 @@ grub-mkconfig -o /boot/grub/grub.cfg
 ```
 
 
-## Option 2: systemd-boot
+## Option 2 (Advanced): systemd-boot
 
 
 ### Install systemd-boot
@@ -121,7 +121,7 @@ echo -n "root=UUID=$root_uuid quiet bgrt_disable" > /etc/kernel/cmdline
 ```
 
 
-#### Optional: If using Btrfs for the root partition
+#### Maybe: If using Btrfs for the root partition
 
 The kernel needs to know on which subvolume it will find the rootfs.
 
@@ -189,7 +189,8 @@ reboot
 
 If everything works the system will start and you can login as root.
 
-### Troubleshooting
+
+### Maybe: Troubleshooting
 
 On some systems the NVRAM entries are not stored persistently, probably due to bugs in the UEFI implementation.
 Arch Linux will then probably not boot, because the BIOS/UEFI does not now about it.
