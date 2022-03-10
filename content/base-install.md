@@ -3,6 +3,16 @@
 Boot into the live environment using UEFI.
 
 
+## Optional: Set keyboard layout
+
+If you don't want to use the default US keyboard layout during the installation change the layout by listing the available layouts and choosing one of them (example with standard German layout):
+
+```bash
+ls /usr/share/kbd/keymaps/**/*.map.gz
+loadkeys de-latin1
+```
+
+
 ## Create partitions
 
 Use [gdisk](https://wiki.archlinux.org/title/GPT_fdisk#Create_a_partition_table_and_partitions) to partition the disk.

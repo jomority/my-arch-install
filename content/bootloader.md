@@ -189,6 +189,8 @@ reboot
 
 If everything works the system will start and you can login as root.
 
+Don't forget to change your keyboard layout again if you did this previously using the `loadkeys` command.
+
 
 ### Maybe: Troubleshooting
 
