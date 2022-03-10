@@ -77,8 +77,8 @@ mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
 
 ### Option 2 (Advanced): Btrfs as root filesystem
 
-We create the btrfs subvolumes `@`, `@home` and `@var` for `/`, `/home/` and `/var/` respectively.
-While this is not strictly necessary this makes it possible to snapshot them separately (see the [ArchWiki](https://wiki.archlinux.org/title/Snapper#Suggested_filesystem_layout) and the [later chapter about snapper](./snapper.md))
+We create the Btrfs subvolumes `@`, `@home` and `@var` for `/`, `/home/` and `/var/` respectively.
+While it is not strictly necessary to use Btrfs per se, this makes it possible to snapshot them separately (see the [ArchWiki](https://wiki.archlinux.org/title/Snapper#Suggested_filesystem_layout) and the chapter [Optional: Setup Snapper](./snapper.md)).
 
 ```bash
 mkfs.btrfs /dev/nvme0n1p2  # or /dev/sda2
@@ -104,7 +104,7 @@ mkswap /dev/nvme0n1p3  # or /dev/sda3
 swapon /dev/nvme0n1p3  # or /dev/sda3
 ```
 
-If you instead want to use a swapfile do (adjust the count parameter to at least your actual RAM size if you want to use hibernation):
+If you instead want to use a swapfile instead do (adjust the count parameter to at least your actual RAM size if you want to use hibernation):
 
 ```bash
 dd if=/dev/zero of=/mnt/root/swapfile count=8192 bs=1MiB

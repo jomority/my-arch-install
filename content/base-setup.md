@@ -107,7 +107,7 @@ sed -i '/^HOOKS/s/udev/systemd/' /etc/mkinitcpio.conf
 mkinitcpio -P
 ```
 
-*Note:* This would also be possible with the "resume" hook, see the [ArchWiki](https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Configure_the_initramfs).
+*Note:* This could also be done with the "resume" hook, see the [ArchWiki](https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Configure_the_initramfs).
 
 ---
 

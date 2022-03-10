@@ -2,7 +2,7 @@
 
 Prerequisites: You entered (chroot) the system installed in [Install base system](./base-install.md) and have done the steps in [Setup base system](./base-setup.md)
 
-I will leave the choice between GRUB and systemd-boot.
+I will leave you the choice between GRUB and systemd-boot.
 GRUB supports more scenarios and still is the default in most other distributions, therefore it is easier to troubleshoot using search engines.
 Systemd-boot is simpler and more modern, but can't do some special things, for example boot a Windows system from another **physical** drive.
 It is possible that I won't "support" GRUB in the future anymore.
@@ -40,7 +40,7 @@ grub-install --target=x86_64-efi --efi-directory=/efi/ --bootloader-id=archlinux
 ```
 
 
-### Optional: Other OSes
+### Optional: Support for booting other OSes
 
 If you want GRUB to detect OSes on other partitions and drives do:
 

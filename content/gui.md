@@ -127,7 +127,8 @@ paru -S helvum
 
 ## Hardware video acceleration
 
-Especially useful for mobile devices to save power. See the [ArchWiki](https://wiki.archlinux.org/title/Hardware_video_acceleration) for more information and hardware not listed here.
+Especially useful for mobile devices to save power.
+See the [ArchWiki](https://wiki.archlinux.org/title/Hardware_video_acceleration) for more information and older hardware.
 
 ```bash
 paru -S gstreamer-vaapi
