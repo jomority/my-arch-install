@@ -43,6 +43,17 @@ sudo passwd -l root
 ```
 
 
+## Maybe: Connect to WiFi
+
+If you used WiFi previously, you need to connect to it again.
+This time use [NetworkManager](https://wiki.archlinux.org/title/NetworkManager#nmcli_examples):
+
+```bash
+nmcli device wifi list
+nmcli device wifi connect $SSID_or_BSSID password $password
+```
+
+
 ## Install essential packages
 
 *Note:* These are packages that I consider essential. I am well aware that this is subjective.

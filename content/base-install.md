@@ -21,7 +21,14 @@ In GParted, use *fat32* for the *EFI system parition* partition and set the *boo
 
 ## Setup network
 
-Connect Ethernet cable or use [iwctl](https://wiki.archlinux.org/title/Iwd#iwctl) for WiFi.
+Connect Ethernet cable or use [iwctl](https://wiki.archlinux.org/title/Iwd#iwctl) for WiFi (replace `<DEVICE>` with the device name you got from the first command):
+
+```bash
+iwctl device list
+iwctl station <DEVICE> scan
+iwctl station <DEVICE> get-networks
+iwctl station <DEVICE> connect $SSID
+```
 
 Test connection:
 
