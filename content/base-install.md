@@ -133,25 +133,11 @@ swapon /mnt/root/swapfile
 
 ## Install base system
 
-To use a fast mirror near to you for package download during the installation, edit the mirrorlist and put the server on top:
-
-```bash
-vim /etc/pacman.d/mirrorlist
-# Use `dd` and `p` to cut and paste a line, `:wq` to save and quit
-```
-
 Finally install Arch Linux:
 
 ```bash
 pacstrap /mnt/root/ base linux linux-firmware btrfs-progs
 genfstab -U /mnt/root/ >> /mnt/root/etc/fstab
-```
-
-Then repeat the mirrorlist edit for your installed system:
-
-```bash
-vim /mnt/root/etc/pacman.d/mirrorlist
-# Use `dd` and `p` to cut and paste a line, `:wq` to save and quit
 ```
 
 ---
