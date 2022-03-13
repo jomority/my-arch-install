@@ -17,16 +17,56 @@ Install & configure `sudo` so we don't need the root account:
 
 ```bash
 pacman -S sudo
-sed -i '/wheel ALL=(ALL:ALL) ALL/s/^# *//' /etc/sudoers
-visudo -c
 usermod -aG wheel $user
+EDITOR=vim visudo
 ```
 
+```diff
+--- /etc/sudoers
++++ /etc/sudoers
+@@ -79,7 +79,7 @@
+ root ALL=(ALL:ALL) ALL
+ 
+ ## Uncomment to allow members of group wheel to execute any command
+-# %wheel ALL=(ALL:ALL) ALL
++%wheel ALL=(ALL:ALL) ALL
+ 
+ ## Same thing without a password
+ # %wheel ALL=(ALL:ALL) NOPASSWD: ALL
+```
+
+<details>
+<summary>Command</summary>
+
+```bash
+sed -i '/wheel ALL=(ALL:ALL) ALL/s/^# *//' /etc/sudoers
+visudo -c
+```
+</details>
+
 Disable faillock (see [this issue](https://bugs.archlinux.org/task/67644)):
+
+```diff
+--- /etc/security/faillock.conf
++++ /etc/security/faillock.conf
+@@ -29,7 +29,7 @@
+ # Deny access if the number of consecutive authentication failures
+ # for this user during the recent interval exceeds n tries.
+ # The default is 3.
+-# deny = 3
++deny = 0
+ #
+ # The length of the interval during which the consecutive
+ # authentication failures must happen for the user account
+```
+
+<details>
+<summary>Command</summary>
 
 ```bash
 sed -i -E 's/^(# *)?(deny =).*$/\2 0/' /etc/security/faillock.conf
 ```
+</details>
 
 Logout and back in as `$user`.
 
@@ -86,15 +126,51 @@ If you are concerned about your privacy don't install it.
 
 Disable root login:
 
+```diff
+--- /etc/ssh/sshd_config
++++ /etc/ssh/sshd_config
+@@ -29,7 +29,7 @@
+ # Authentication:
+ 
+ #LoginGraceTime 2m
+-#PermitRootLogin prohibit-password
++PermitRootLogin no
+ #StrictModes yes
+ #MaxAuthTries 6
+ #MaxSessions 10
+```
+
+<details>
+<summary>Command</summary>
+
 ```bash
 sudo sed -i -E 's/^#?(PermitRootLogin).*$/\1 no/' /etc/ssh/sshd_config
 ```
+</details>
 
 Disable Password login. You should use [SSH keys](https://wiki.archlinux.org/title/SSH_keys).
+
+```diff
+--- /etc/ssh/sshd_config
++++ /etc/ssh/sshd_config
+@@ -54,7 +54,7 @@
+ #IgnoreRhosts yes
+ 
+ # To disable tunneled clear text passwords, change to no here!
+-#PasswordAuthentication yes
++PasswordAuthentication no
+ #PermitEmptyPasswords no
+ 
+ # Change to no to disable s/key passwords
+```
+
+<details>
+<summary>Command</summary>
 
 ```bash
 sudo sed -i -E 's/^#?(PasswordAuthentication).*$/\1 no/' /etc/ssh/sshd_config
 ```
+</details>
 
 Enable & start:
 
@@ -178,13 +254,57 @@ sudo tee -a /etc/xdg/reflector/reflector.conf >/dev/null <<EOF
 --ipv6
 EOF
 sudo systemctl enable --now reflector.service reflector.timer
+```
+
+```diff
+--- /etc/pacman.conf
++++ /etc/pacman.conf
+@@ -26,7 +26,7 @@
+ #IgnoreGroup =
+ 
+ #NoUpgrade   =
+-#NoExtract   =
++NoExtract   = etc/pacman.d/mirrorlist
+ 
+ # Misc options
+ #UseSyslog
+```
+
+<details>
+<summary>Command</summary>
+
+```bash
 sudo sed -i -E 's;^#?(NoExtract.*)$;\1 etc/pacman.d/mirrorlist;' /etc/pacman.conf
 ```
+</details>
 
 
 ## Configure pacman
 
 Make pacman output more beautiful and the downloads faster:
+
+```diff
+--- /etc/pacman.conf
++++ /etc/pacman.conf
+@@ -30,11 +30,11 @@
+ 
+ # Misc options
+ #UseSyslog
+-#Color
++Color
+ #NoProgressBar
+ CheckSpace
+-#VerbosePkgLists
+-#ParallelDownloads = 5
++VerbosePkgLists
++ParallelDownloads = 5
+ 
+ # By default, pacman accepts packages signed by keys that its local keyring
+ # trusts (see pacman-key and its man page), as well as unsigned packages.
+```
+
+<details>
+<summary>Command</summary>
 
 ```bash
 sudo sed -i \
@@ -193,8 +313,35 @@ sudo sed -i \
 	-e '/^#ParallelDownloads/s/^#//' \
 	/etc/pacman.conf
 ```
+</details>
 
 Make makepkg faster by using all cores for building and compressing.
+
+```diff
+--- /etc/makepkg.conf
++++ /etc/makepkg.conf
+@@ -46,7 +46,7 @@
+ LTOFLAGS="-flto=auto"
+ #RUSTFLAGS="-C opt-level=2"
+ #-- Make Flags: change this for DistCC/SMP systems
+-#MAKEFLAGS="-j2"
++MAKEFLAGS="-j$(nproc)"
+ #-- Debugging flags
+ DEBUG_CFLAGS="-g"
+ DEBUG_CXXFLAGS="$DEBUG_CFLAGS"
+@@ -137,7 +137,7 @@
+ COMPRESSGZ=(gzip -c -f -n)
+ COMPRESSBZ2=(bzip2 -c -f)
+ COMPRESSXZ=(xz -c -z -)
+-COMPRESSZST=(zstd -c -z -q -)
++COMPRESSZST=(zstd -c -z -q - --threads=0)
+ COMPRESSLRZ=(lrzip -q)
+ COMPRESSLZO=(lzop -q)
+ COMPRESSZ=(compress -c -f)
+```
+
+<details>
+<summary>Command</summary>
 
 ```bash
 sudo sed -i -E \
@@ -202,14 +349,40 @@ sudo sed -i -E \
 	-e '/^COMPRESSZST/s/\)$/ --threads=0)/' \
 	/etc/makepkg.conf
 ```
+</details>
 
 
 ### Optional: multilib repository
 
 If you wan't to use wine and/or steam you need to enable the multilib repository:
 
+```diff
+--- /etc/pacman.conf
++++ /etc/pacman.conf
+@@ -90,8 +90,8 @@
+ #[multilib-testing]
+ #Include = /etc/pacman.d/mirrorlist
+ 
+-#[multilib]
+-#Include = /etc/pacman.d/mirrorlist
++[multilib]
++Include = /etc/pacman.d/mirrorlist
+ 
+ # An example of a custom package repository.  See the pacman manpage for
+ # tips on creating your own repositories.
+```
+
+<details>
+<summary>Command</summary>
+
 ```bash
 sudo sed -i '/#\[multilib\]/{s/^#//;n;s/^#//}' /etc/pacman.conf
+```
+</details>
+
+Refresh package database:
+
+```bash
 sudo pacman -Syu
 ```
 
@@ -301,9 +474,42 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 
 We need to tell mkinitcpio to also create UKIs for the LTS kernel:
 
+```diff
+--- /etc/mkinitcpio.d/linux-lts.preset
++++ /etc/mkinitcpio.d/linux-lts.preset
+@@ -2,13 +2,16 @@
+ 
+ ALL_config="/etc/mkinitcpio.conf"
+ ALL_kver="/boot/vmlinuz-linux-lts"
++ALL_microcode=(/boot/*-ucode.img)
+ 
+ PRESETS=('default' 'fallback')
+ 
+ #default_config="/etc/mkinitcpio.conf"
+ default_image="/boot/initramfs-linux-lts.img"
+-#default_options=""
++default_efi_image="/efi/EFI/Linux/archlinux-linux-lts.efi"
++default_options=" --splash /usr/share/systemd/bootctl/splash-arch.bmp"
+ 
+ #fallback_config="/etc/mkinitcpio.conf"
+ fallback_image="/boot/initramfs-linux-lts-fallback.img"
+-fallback_options="-S autodetect"
++fallback_efi_image="/efi/EFI/Linux/archlinux-linux-lts-fallback.efi"
++fallback_options="-S autodetect --splash /usr/share/systemd/bootctl/splash-arch.bmp"
+```
+
+<details>
+<summary>Command</summary>
+
 ```bash
 sed 's/linux/linux-lts/g; s/archlinux-lts/archlinux/g' /etc/mkinitcpio.d/linux.preset | \
 	sudo tee /etc/mkinitcpio.d/linux-lts.preset >/dev/null
+```
+</details>
+
+Regenerate initial ramdisk:
+
+```bash
 sudo mkinitcpio -p linux-lts
 ```
 

@@ -46,8 +46,26 @@ If you want GRUB to detect OSes on other partitions and drives do:
 
 ```bash
 pacman -S --asdeps os-prober
+```
+
+```diff
+--- /etc/default/grub
++++ /etc/default/grub
+@@ -60,4 +60,4 @@
+ # documentation on GRUB_DISABLE_OS_PROBER, if still want to enable this
+ # functionality install os-prober and uncomment to detect and include other
+ # operating systems.
+-#GRUB_DISABLE_OS_PROBER=false
++GRUB_DISABLE_OS_PROBER=false
+```
+
+<details>
+<summary>Command</summary>
+
+```bash
 sed -i -E 's/^#?(GRUB_DISABLE_OS_PROBER)=.*$/\1=false/' /etc/default/grub
 ```
+</details>
 
 
 ### Optional: Hibernation support
@@ -57,39 +75,68 @@ If you want hibernation to work GRUB has to tell the kernel at boot where to fin
 
 #### Swap partition
 
-If you use a swap partition you just need to find out its UUID and add it to the kernel cmdline:
+If you use a swap partition you just need to find out its UUID and add it to the kernel cmdline (replace `<SWAP_UUID>`):
 
 ```bash
-grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
+findmnt -st swap -no UUID
+```
+
+```diff
+--- /etc/default/grub
++++ /etc/default/grub
+@@ -3,7 +3,7 @@
+ GRUB_DEFAULT=0
+ GRUB_TIMEOUT=5
+ GRUB_DISTRIBUTOR="Arch"
+-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
++GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=<SWAP_UUID>"
+ GRUB_CMDLINE_LINUX=""
+ 
+ # Preload both GPT and MBR modules so that they are not missed
+```
+
+<details>
+<summary>Command</summary>
+
+```bash
 swap_uuid=$(findmnt -st swap -no UUID)
 sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/"$/ resume=UUID='$swap_uuid'"/' /etc/default/grub
-grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
 ```
-
-It should look like this:
-
-```
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=ed2a0b41-0845-4298-9753-5598a2b191e7"
-```
+</details>
 
 
 #### Swap file
 
-If you use a swap file you need to find out the UUID of its containing partition, the start offset and add that to the kernel cmdline:
+If you use a swap file you need to find out the UUID of its containing partition, the start offset and add that to the kernel cmdline (replace `<SWAP_UUID>` and `<SWAP_OFFSET>`):
 
 ```bash
-grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
+findmnt -no UUID -T /swapfile
+filefrag -v /swapfile | awk '$1 == "0:" { $0=$4; sub(/\.*$/, ""); print }'
+```
+
+```diff
+--- /etc/default/grub
++++ /etc/default/grub
+@@ -3,7 +3,7 @@
+ GRUB_DEFAULT=0
+ GRUB_TIMEOUT=5
+ GRUB_DISTRIBUTOR="Arch"
+-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
++GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=<SWAP_UUID> resume_offset=<SWAP_OFFSET>"
+ GRUB_CMDLINE_LINUX=""
+ 
+ # Preload both GPT and MBR modules so that they are not missed
+```
+
+<details>
+<summary>Command</summary>
+
+```bash
 root_uuid=$(findmnt -no UUID -T /swapfile)
 swap_offset=$(filefrag -v /swapfile | awk '$1 == "0:" { $0=$4; sub(/\.*$/, ""); print }')
 sed -i '/GRUB_CMDLINE_LINUX_DEFAULT/s/"$/ resume=UUID='$root_uuid' resume_offset='$swap_offset'"/' /etc/default/grub
-grep GRUB_CMDLINE_LINUX_DEFAULT /etc/default/grub
 ```
-
-It should look like this:
-
-```
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet resume=UUID=ed2a0b41-0845-4298-9753-5598a2b191e7 resume_offset=249925632"
-```
+</details>
 
 
 ### Generate GRUB config
@@ -160,6 +207,35 @@ echo -n " resume=UUID=$root_uuid resume_offset=$swap_offset" >> /etc/kernel/cmdl
 
 We use [Mkinitcpio](https://wiki.archlinux.org/title/Mkinitcpio) so that besides creating the initial ramdisk, it will also create [unified kernel images](https://wiki.archlinux.org/title/Unified_kernel_image) (UKI), so that systemd-boot can automatically boot them.
 
+Configure mkinitcpio:
+
+```diff
+--- /etc/mkinitcpio.d/linux.preset
++++ /etc/mkinitcpio.d/linux.preset
+@@ -2,13 +2,16 @@
+ 
+ ALL_config="/etc/mkinitcpio.conf"
+ ALL_kver="/boot/vmlinuz-linux"
++ALL_microcode=(/boot/*-ucode.img)
+ 
+ PRESETS=('default' 'fallback')
+ 
+ #default_config="/etc/mkinitcpio.conf"
+ default_image="/boot/initramfs-linux.img"
+-#default_options=""
++default_efi_image="/efi/EFI/Linux/archlinux-linux.efi"
++default_options=" --splash /usr/share/systemd/bootctl/splash-arch.bmp"
+ 
+ #fallback_config="/etc/mkinitcpio.conf"
+ fallback_image="/boot/initramfs-linux-fallback.img"
+-fallback_options="-S autodetect"
++fallback_efi_image="/efi/EFI/Linux/archlinux-linux-fallback.efi"
++fallback_options="-S autodetect --splash /usr/share/systemd/bootctl/splash-arch.bmp"
+```
+
+<details>
+<summary>Command</summary>
+
 ```bash
 sed -i -E \
 	-e '/^ALL_kver=/a ALL_microcode=(/boot/*-ucode.img)' \
@@ -168,6 +244,12 @@ sed -i -E \
 	-e '/^fallback_image=/a fallback_efi_image="/efi/EFI/Linux/archlinux-linux-fallback.efi"' \
 	-e 's;^#?(fallback_options=".*)"$;\1 --splash /usr/share/systemd/bootctl/splash-arch.bmp";' \
 	/etc/mkinitcpio.d/linux.preset
+```
+</details>
+
+Generate UKI and set default boot entry:
+
+```bash
 mkinitcpio -p linux
 bootctl set-default archlinux-linux.efi
 ```

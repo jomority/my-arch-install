@@ -136,7 +136,7 @@ swapon /mnt/root/swapfile
 Finally install Arch Linux:
 
 ```bash
-pacstrap /mnt/root/ base linux linux-firmware btrfs-progs
+pacstrap /mnt/root/ base linux linux-firmware btrfs-progs vim
 genfstab -U /mnt/root/ >> /mnt/root/etc/fstab
 ```
 
