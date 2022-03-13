@@ -342,7 +342,7 @@ paru -S memtest86-efi
 sudo memtest86-efi --install
 ```
 
-Select GRUB or systemd-boot accordingly.
+Everything should be detected correctly. Select GRUB (`3`) or systemd-boot (`4`) accordingly.
 
 ---
 

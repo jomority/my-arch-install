@@ -18,10 +18,10 @@ loadkeys de-latin1
 Use [gdisk](https://wiki.archlinux.org/title/GPT_fdisk#Create_a_partition_table_and_partitions) to partition the disk.
 Create at least:
 
-- A 512MiB *EFI system partition* partition
+- A 512MiB *EFI system partition* (`ef00`) partition
   - If it does not already exists. In that case DO NOT format it with the `mkfs.fat` command below.
-- A *Linux x86-64 root* partition
-- Optionally a *Linux swap* partition
+- A *Linux x86-64 root* (`8304`) partition
+- Optionally a *Linux swap* (`8200`) partition
   - If hibernation is desired, its size should be at least the RAM size, e.g. 8192 MiB for 8GB RAM
   - Alternatively you can use either no swap at all or a swapfile (this is not advised with btrfs)
 
