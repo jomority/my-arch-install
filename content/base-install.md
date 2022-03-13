@@ -100,14 +100,14 @@ While it is not strictly necessary to use Btrfs per se, this makes it possible t
 ```bash
 mkfs.btrfs /dev/nvme0n1p2  # or /dev/sda2
 mkdir -p /mnt/root/ /mnt/tmp/
-mount /dev/nvme0n1p2 /mnt/tmp/  # or /dev/sda2
+mount -o compress=zstd /dev/nvme0n1p2 /mnt/tmp/  # or /dev/sda2
 btrfs subvolume create /mnt/tmp/@
 btrfs subvolume create /mnt/tmp/@home
 btrfs subvolume create /mnt/tmp/@var
-mount -o compress=zstd,subvol=@ /dev/nvme0n1p2 /mnt/root/  # or /dev/sda2
+mount -o subvol=@ /dev/nvme0n1p2 /mnt/root/  # or /dev/sda2
 mkdir -p /mnt/root/efi/ /mnt/root/home/ /mnt/root/var/
-mount -o compress=zstd,subvol=@home /dev/nvme0n1p2 /mnt/root/home/  # or /dev/sda2
-mount -o compress=zstd,subvol=@var /dev/nvme0n1p2 /mnt/root/var/  # or /dev/sda2
+mount -o subvol=@home /dev/nvme0n1p2 /mnt/root/home/  # or /dev/sda2
+mount -o subvol=@var /dev/nvme0n1p2 /mnt/root/var/  # or /dev/sda2
 mount /dev/nvme0n1p1 /mnt/root/efi/  # or /dev/sda1
 ```
 
