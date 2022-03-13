@@ -74,6 +74,7 @@ pacman -Syu archlinux-keyring
 ## Setup NetworkManager with systemd-resolved
 
 ```bash
+yes | pacman -S --asdeps iptables-nft
 pacman -S networkmanager systemd-resolvconf
 exit
 ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/root/etc/resolv.conf
