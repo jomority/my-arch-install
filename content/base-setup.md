@@ -75,9 +75,14 @@ pacman -Syu archlinux-keyring
 
 ```bash
 pacman -S networkmanager systemd-resolvconf
-ln -sf /run/systemd/resolve/stub-resolv.conf /etc/resolv.conf
+exit
+ln -sf /run/systemd/resolve/stub-resolv.conf /mnt/root/etc/resolv.conf
+arch-chroot /mnt/root/
 systemctl enable NetworkManager systemd-resolved
 ```
+
+We need to briefly exit the chroot to link `/etc/resolv.conf`, because it is "over"-mounted in the chroot.
+
 
 ### Optional: firewall
 
