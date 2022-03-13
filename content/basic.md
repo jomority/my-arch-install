@@ -50,7 +50,7 @@ This time use [NetworkManager](https://wiki.archlinux.org/title/NetworkManager#n
 
 ```bash
 nmcli device wifi list
-nmcli device wifi connect $SSID_or_BSSID password $password
+nmcli device wifi connect <SSID_OR_BSSID> password <PASSWORD>
 ```
 
 
@@ -87,13 +87,13 @@ If you are concerned about your privacy don't install it.
 Disable root login:
 
 ```bash
-sed -i -E 's/^#?(PermitRootLogin).*$/\1 no/' /etc/ssh/sshd_config
+sudo sed -i -E 's/^#?(PermitRootLogin).*$/\1 no/' /etc/ssh/sshd_config
 ```
 
 Disable Password login. You should use [SSH keys](https://wiki.archlinux.org/title/SSH_keys).
 
 ```bash
-sed -i -E 's/^#?(PasswordAuthentication).*$/\1 no/' /etc/ssh/sshd_config
+sudo sed -i -E 's/^#?(PasswordAuthentication).*$/\1 no/' /etc/ssh/sshd_config
 ```
 
 Enable & start:
@@ -138,7 +138,6 @@ This ensures, for example, that plug and play still works.
 
 ```bash
 sudo pacman -S kernel-modules-hook
-sudo systemctl daemon-reload
 sudo systemctl enable linux-modules-cleanup.service
 ```
 
@@ -305,7 +304,8 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 We need to tell mkinitcpio to also create UKIs for the LTS kernel:
 
 ```bash
-sed 's/linux/linux-lts/g; s/archlinux-lts/archlinux/g' /etc/mkinitcpio.d/linux.preset | sudo tee /etc/mkinitcpio.d/linux-lts.preset >/dev/null
+sed 's/linux/linux-lts/g; s/archlinux-lts/archlinux/g' /etc/mkinitcpio.d/linux.preset | \
+	sudo tee /etc/mkinitcpio.d/linux-lts.preset >/dev/null
 sudo mkinitcpio -p linux-lts
 ```
 
