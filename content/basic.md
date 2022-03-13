@@ -220,17 +220,15 @@ Install the `base-devel` group which is needed if we want to build (AUR) package
 We install them as dependencies because we later install the [base-devel-meta](https://aur.archlinux.org/packages/base-devel-meta) AUR package which mimics what the [base](https://archlinux.org/packages/core/any/base/) package does for `base-devel`.
 
 ```bash
-sudo pacman -S --asdeps base-devel
+sudo pacman -S --asdeps --needed --noconfirm base-devel
 ```
-
-Press enter to choose `all`.
 
 Build and install Paru:
 
 ```bash
 git clone https://aur.archlinux.org/paru.git
 cd paru/
-makepkg -sri
+makepkg -sri --noconfirm
 cd ..
 rm -rf paru/
 paru -S --asdeps bat

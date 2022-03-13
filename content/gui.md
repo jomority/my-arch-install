@@ -74,6 +74,9 @@ paru -S --asdeps gnome-remote-desktop \
 	rygel
 ```
 
+When you get asked to choose between `jack2` and `pipewire-jack` I recommend `pipewire-jack`.
+Especially if you want to use [PipeWire for audio](#optional-advanced-handle-audio-with-pipewire) anyway.
+
 
 #### Maybe: If firewall installed
 
